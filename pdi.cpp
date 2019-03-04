@@ -132,7 +132,7 @@ void RGB_to_YIQ_to_RGB_Again(Image source)
 	Save(filename2, *image2);
 }
 
-void Negativo(Image source)
+void NegativoRGB(Image source)
 {
 	for (int k = 0; k < source.pixel_count; k++)
 	{
@@ -141,13 +141,32 @@ void Negativo(Image source)
 		source.pixels[k].b = abs(source.pixels[k].b - 255);
 	}
 
-	string s = "output/negativo.png";
+	string s = "output/negativoRGB.png";
 	const char* filename = s.c_str();
 
 	Save(filename, source);
 }
 
-void BrilhoAditivo(Image source, int bright)
+
+//WIP
+void NegativoYIQ(Image source)
+{
+	vector<YIQ> yiq = RGB_to_YIQ(source);
+
+	for(int k = 0; k < source.pixel_count; k++)
+	{
+		
+	}
+
+	Image* image = new Image(YIQ_to_RGB(yiq), source.width, source.height);
+
+	string s = "output/negativoY.png";
+	const char* filename = s.c_str();
+
+	Save(filename, *image);
+}
+
+void BrilhoAditivoYIQ(Image source, int bright)
 {
 	vector<YIQ> yiq = RGB_to_YIQ(source);
 
@@ -158,13 +177,13 @@ void BrilhoAditivo(Image source, int bright)
 
 	Image* image = new Image(YIQ_to_RGB(yiq), source.width, source.height);
 
-	string s = "output/brilho_aditivo.png";
+	string s = "output/brilho_aditivoYIQ.png";
 	const char* filename = s.c_str();
 
 	Save(filename, *image);
 }
 
-void BrilhoMultiplicativo(Image source, int bright)
+void BrilhoMultiplicativoYIQ(Image source, int bright)
 {
 	vector<YIQ> yiq = RGB_to_YIQ(source);
 
@@ -175,8 +194,39 @@ void BrilhoMultiplicativo(Image source, int bright)
 
 	Image* image = new Image(YIQ_to_RGB(yiq), source.width, source.height);
 
-	string s = "output/brilho_multiplicativo.png";
+	string s = "output/brilho_multiplicativoYIQ.png";
 	const char* filename = s.c_str();
 
 	Save(filename, *image);
+}
+
+void BrilhoAditivoRGB(Image source, int bright)
+{
+	for (int i = 0; i < source.pixel_count; i++)
+	{
+		source.pixels[i].r += bright;
+		source.pixels[i].g += bright;
+		source.pixels[i].b += bright;
+	}
+
+	string s = "output/brilho_aditivoRGB.png";
+	const char* filename = s.c_str();
+
+	Save(filename, source);
+}
+
+
+void BrilhoMultiplicativoRGB(Image source, int bright)
+{
+	for (int i = 0; i < source.pixel_count; i++)
+	{
+		source.pixels[i].r *= bright;
+		source.pixels[i].g *= bright;
+		source.pixels[i].b *= bright;
+	}
+
+	string s = "output/brilho_multiplicativoRGB.png";
+	const char* filename = s.c_str();
+
+	Save(filename, source);
 }

@@ -23,10 +23,17 @@ vector<YIQ>  RGB_to_YIQ(Image source);
 
 vector<Pixel> YIQ_to_RGB(std::vector<YIQ> source);
 
-void Negativo(Image source);
+void NegativoRGB(Image source);
 
-void BrilhoAditivo(Image source, int bright);
+void NegativoYIQ(Image source);
+void BrilhoAditivoYIQ(Image source, int bright);
 
-void BrilhoMultiplicativo(Image source, int bright);
+void BrilhoAditivoRGB(Image source, int bright);
+
+void BrilhoMultiplicativoYIQ(Image source, int bright);
+
+void BrilhoMultiplicativoRGB(Image source, int bright);
+
+vector<vector<unsigned>> Convolucao(vector<vector<unsigned>> mask, unsigned width, unsigned height);
 
 #endif

@@ -20,8 +20,7 @@ int main()
 
 	if(image == nullptr)
 		return -1;
-
-
+/*
 	Red(("output/Red " + sFilename).c_str(), *image);
 
 	Green(("output/Green " + sFilename).c_str(), *image);
@@ -29,17 +28,24 @@ int main()
 	Blue(("output/Blue " + sFilename).c_str(), *image);
 
 	RGB_to_YIQ_to_RGB_Again(*image);
+*/
+	NegativoRGB(*image);
 
-	Negativo(*image);
+	NegativoYIQ(*image);
 
-	string bright;
+/*	string bright;
 
 	cout << "Bright factor: " << endl;
 	cin >> bright;
 
-	BrilhoAditivo(*image, atoi(bright.c_str()));
+	BrilhoAditivoYIQ(*image, atoi(bright.c_str()));
 
-	BrilhoMultiplicativo(*image, atoi(bright.c_str()));
+	BrilhoMultiplicativoYIQ(*image, atoi(bright.c_str()));
+
+	BrilhoAditivoRGB(*image, atoi(bright.c_str()));
+
+	BrilhoMultiplicativoRGB(*image, atoi(bright.c_str()));
+	*/
 
 	return 0;
 }
