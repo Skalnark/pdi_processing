@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "pdi.h"
+#include "image.h"
 
 using namespace std;
 
@@ -15,20 +16,30 @@ int main()
 
 	const char* filename = sFilename.c_str();
 
-	BlackAndRed(filename);
-	/*while(true){
-		int option;
-		cout << "Insira qual a operação: ";
-		cin >> option;
+	Image* image = new Image(filename);
 
-		switch(option){
-			case 1:
-				//foo
-				break;
-			default:
-				break;
-		}
-	}*/
+	if(image == nullptr)
+		return -1;
+
+
+	Red(("output/Red " + sFilename).c_str(), *image);
+
+	Green(("output/Green " + sFilename).c_str(), *image);
+
+	Blue(("output/Blue " + sFilename).c_str(), *image);
+
+	RGB_to_YIQ_to_RGB_Again(*image);
+
+	Negativo(*image);
+
+	string bright;
+
+	cout << "Bright factor: " << endl;
+	cin >> bright;
+
+	BrilhoAditivo(*image, atoi(bright.c_str()));
+
+	BrilhoMultiplicativo(*image, atoi(bright.c_str()));
 
 	return 0;
 }

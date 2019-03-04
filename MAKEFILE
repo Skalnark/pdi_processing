@@ -1,13 +1,10 @@
-all: pdi
+all: main
 
-pdi: main.cpp pdi.o 
-	g++ --std=c++11 -Wall -Werror -Wpedantic -O3 pdi.o main.c -o pdi
+main: main.cpp pdi.cpp pdi.h lodepng.cpp lodepng.h image.cpp image.h 
+	g++ --std=c++11 -fpermissive *.cpp -o pdi
 
-pdi.o: lodepng.o pdi.h pdi.cpp
-	g++ --std=c++11 -Wall -Werror -Wpedantic -O3 lodepng.o pdi.c -o pdi.o
-
-lodepng.o: lodepng.h lodepng.cpp 
-	g++ --std=c++11 -Wall -Werror -Wpedantic -O3 lodepng.cpp -o lodepng.o
+.PHONY:
+	clean
 
 clean:
-rm -rf *.o *~ pdi
+	rm -rf *~ pdi
