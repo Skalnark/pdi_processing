@@ -12,7 +12,11 @@ void Save(const char* filename, Image source)
 {
 	unsigned error = lodepng::encode(filename, source.ByteList(), source.width, source.height);
 
-	if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
+	if(error)
+	{
+		std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
+		std::cout << "erro ao salvar o arquivo" << endl;
+	}
 }
 
 void Red(const char* filename, Image source){

@@ -10,42 +10,69 @@ using namespace std;
 
 int main()
 {
+	
 	string sFilename;
-	cout << "File' path: " << endl;
+	cout << "Arquivo: " << endl;
 	cin >> sFilename;
 
 	const char* filename = sFilename.c_str();
 
 	Image* image = new Image(filename);
 
-	if(image == nullptr)
+	if(image->pixel_count == 0)
 		return -1;
-/*
-	Red(("output/Red " + sFilename).c_str(), *image);
 
-	Green(("output/Green " + sFilename).c_str(), *image);
+	while(1)
+	{
+		string _option;
+		string _bright;
+		int option;
+		int bright;
 
-	Blue(("output/Blue " + sFilename).c_str(), *image);
+		printf( "\n"
+				"1 - Separacao das bandas de cores\n"
+			    "2 - Negativo\n"
+			    "3 - Controle de brilho aditivo\n"
+			    "4 - Controle de brilho multiplicativo\n"
+			    "5 - Filtro Sobel\n" 
+			    "6 - Filtro Media\n" 
+			    "7 - Fltro Mediana\n" 
+			    "8 - Limiarizacao\n" 
+				"\n"
+				"0 - Sair\n");
 
-	RGB_to_YIQ_to_RGB_Again(*image);
-*/
-	NegativoRGB(*image);
+		cin >> option;
 
-	NegativoYIQ(*image);
+		switch(option)
+		{
+			case 1:
+				Red(("output/Red " + sFilename).c_str(), *image);
+				Green(("output/Green " + sFilename).c_str(), *image);
+				Blue(("output/Blue " + sFilename).c_str(), *image);
+				break;
+			case 2:
+				NegativoRGB(*image);
+				NegativoYIQ(*image);
+				break;
+			case 3:
+				cout << "brilho: " << endl;
+				cin >> bright;
 
-/*	string bright;
-
-	cout << "Bright factor: " << endl;
-	cin >> bright;
-
-	BrilhoAditivoYIQ(*image, atoi(bright.c_str()));
-
-	BrilhoMultiplicativoYIQ(*image, atoi(bright.c_str()));
-
-	BrilhoAditivoRGB(*image, atoi(bright.c_str()));
-
-	BrilhoMultiplicativoRGB(*image, atoi(bright.c_str()));
-	*/
+				BrilhoAditivoYIQ(*image, bright);
+				BrilhoAditivoRGB(*image, bright);
+				break;
+			case 4:
+				cout << "brilho: " << endl;
+				cin >> bright;
+				BrilhoMultiplicativoYIQ(*image, bright);
+				BrilhoMultiplicativoRGB(*image, bright);
+				break;
+			case 0:
+				return 0;
+			default:
+				break;
+		}
+	}
 
 	return 0;
 }

@@ -12,7 +12,10 @@ Image::Image(const char* filename)
 	if(error)
 	{
 		cout << "decode error " << error << ": " << lodepng_error_text(error) << endl;
-	} else
+		std::cout << "erro ao abrir o arquivo" << endl;
+		this->pixel_count = 0;
+	} 
+	else
 	{
 
 		std::vector<Pixel> pixels;
