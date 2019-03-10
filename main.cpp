@@ -24,20 +24,19 @@ int main()
 
 	while(1)
 	{
-		string _option;
-		string _bright;
 		int option;
 		int bright;
+		int limiar;
 
 		printf( "\n"
 				"1 - Separacao das bandas de cores\n"
 			    "2 - Negativo\n"
 			    "3 - Controle de brilho aditivo\n"
 			    "4 - Controle de brilho multiplicativo\n"
-			    "5 - Filtro Sobel\n" 
-			    "6 - Filtro Media\n" 
-			    "7 - Fltro Mediana\n" 
-			    "8 - Limiarizacao\n" 
+			    "5 - Limiarizacao\n" 
+			    "6 - Filtro Sobel\n" 
+			    "7 - Filtro Media\n" 
+			    "8 - Fltro Mediana\n" 
 				"\n"
 				"0 - Sair\n");
 
@@ -55,17 +54,24 @@ int main()
 				NegativoYIQ(*image);
 				break;
 			case 3:
-				cout << "brilho: " << endl;
+				cout << "brilho: ";
 				cin >> bright;
 
 				BrilhoAditivoYIQ(*image, bright);
 				BrilhoAditivoRGB(*image, bright);
 				break;
 			case 4:
-				cout << "brilho: " << endl;
+				cout << "brilho: ";
 				cin >> bright;
 				BrilhoMultiplicativoYIQ(*image, bright);
 				BrilhoMultiplicativoRGB(*image, bright);
+				break;
+			case 5:
+				cout << "Limiar: ";
+				cin >> limiar;
+
+				LimiarizacaoRGB(*image, limiar);
+				LimiarizacaoYIQ(*image, limiar);
 				break;
 			case 0:
 				return 0;

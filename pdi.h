@@ -34,6 +34,10 @@ void BrilhoMultiplicativoYIQ(Image source, int bright);
 
 void BrilhoMultiplicativoRGB(Image source, int bright);
 
+void LimiarizacaoYIQ(Image source, int limiar);
+
+void LimiarizacaoRGB(Image source, int limiar);
+
 vector<vector<unsigned>> Convolucao(vector<vector<unsigned>> mask, unsigned width, unsigned height);
 
 #endif

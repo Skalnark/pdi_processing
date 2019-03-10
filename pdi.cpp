@@ -159,7 +159,7 @@ void NegativoYIQ(Image source)
 
 	for(int k = 0; k < source.pixel_count; k++)
 	{
-		
+		yiq[k].y = abs(yiq[k].y - 255);
 	}
 
 	Image* image = new Image(YIQ_to_RGB(yiq), source.width, source.height);
@@ -208,9 +208,26 @@ void BrilhoAditivoRGB(Image source, int bright)
 {
 	for (int i = 0; i < source.pixel_count; i++)
 	{
-		source.pixels[i].r += bright;
-		source.pixels[i].g += bright;
-		source.pixels[i].b += bright;
+		if(source.pixels[i].r + bright > 255)
+			source.pixels[i].r = 255;
+		else if(source.pixels[i].r + bright < 0)
+			source.pixels[i].r = 0;
+		else
+			source.pixels[i].r += bright;
+
+		if(source.pixels[i].g + bright > 255)
+			source.pixels[i].g = 255;
+		else if(source.pixels[i].g + bright < 0)
+			source.pixels[i].g = 0;
+		else
+			source.pixels[i].g += bright;
+
+		if(source.pixels[i].b + bright > 255)
+			source.pixels[i].b = 255;
+		else if(source.pixels[i].b + bright < 0)
+			source.pixels[i].b = 0;
+		else
+			source.pixels[i].b += bright;
 	}
 
 	string s = "output/brilho_aditivoRGB.png";
@@ -233,4 +250,49 @@ void BrilhoMultiplicativoRGB(Image source, int bright)
 	const char* filename = s.c_str();
 
 	Save(filename, source);
+}
+
+void LimiarizacaoRGB(Image source, int limiar)
+{
+	for (int i = 0; i < source.pixel_count; i++)
+	{
+		float media = (source.pixels[i].r +source.pixels[i].g +source.pixels[i].b) / 3.0;
+		if(media > limiar)
+		{
+			source.pixels[i].r = 255;
+			source.pixels[i].g = 255;
+			source.pixels[i].b = 255;
+		}
+		else
+		{
+			source.pixels[i].r = 0;
+			source.pixels[i].g = 0;
+			source.pixels[i].b = 0;
+		}
+	}
+
+	string s = "output/Limiar_RGB.png";
+	const char* filename = s.c_str();
+
+	Save(filename, source);
+}
+
+void LimiarizacaoYIQ(Image source, int limiar)
+{
+	vector<YIQ> yiq = RGB_to_YIQ(source);
+
+	for(int k = 0; k < source.pixel_count; k++)
+	{
+		if(yiq[k].y > limiar)
+			yiq[k].y = 255;
+		else
+			yiq[k].y = 0;
+	}
+
+	Image* image = new Image(YIQ_to_RGB(yiq), source.width, source.height);
+
+	string s = "output/Limiar_YIQ.png";
+	const char* filename = s.c_str();
+
+	Save(filename, *image);
 }
