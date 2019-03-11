@@ -1,10 +1,12 @@
 #include "lodepng.h"
 #include "image.h"
 #include "yiq.h"
+#include "pdi.h"
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -19,7 +21,8 @@ void Save(const char* filename, Image source)
 	}
 }
 
-void Red(const char* filename, Image source){
+void Red(const char* filename, Image source)
+{
 	
 	for(int i = 0; i < source.pixel_count; i++){
 		source.pixels[i].g = (unsigned)0;
@@ -241,9 +244,26 @@ void BrilhoMultiplicativoRGB(Image source, int bright)
 {
 	for (int i = 0; i < source.pixel_count; i++)
 	{
-		source.pixels[i].r *= bright;
-		source.pixels[i].g *= bright;
-		source.pixels[i].b *= bright;
+		if(source.pixels[i].r * bright > 255)
+			source.pixels[i].r = 255;
+		else if(source.pixels[i].r * bright < 0)
+			source.pixels[i].r = 0;
+		else
+			source.pixels[i].r *= bright;
+
+		if(source.pixels[i].g * bright > 255)
+			source.pixels[i].g = 255;
+		else if(source.pixels[i].g * bright < 0)
+			source.pixels[i].g = 0;
+		else
+			source.pixels[i].g *= bright;
+
+		if(source.pixels[i].b * bright > 255)
+			source.pixels[i].b = 255;
+		else if(source.pixels[i].b * bright < 0)
+			source.pixels[i].b = 0;
+		else
+			source.pixels[i].b *= bright;
 	}
 
 	string s = "output/brilho_multiplicativoRGB.png";
@@ -295,4 +315,98 @@ void LimiarizacaoYIQ(Image source, int limiar)
 	const char* filename = s.c_str();
 
 	Save(filename, *image);
+}
+
+Image Convolucao(Image source)
+{
+	int len = source.pixel_count;
+	auto aux = source.pixels;
+
+	for (int i = 0; i < source.pixel_count; i++)
+	{
+		source.pixels[i] = aux[len - (i + 1)];
+	}
+
+	return source;
+}
+
+	void FiltroDeMediaRGB(Image source, unsigned w, unsigned h, bool convol)
+	{
+
+		vector<vector<Pixel>> matrix = ToMatrix(source);
+		std::vector<Pixel> output;
+		int range = (w * h);
+		
+		if(convol)
+		{
+			source = Convolucao(source);
+		}
+
+
+
+		for (int i = 0; i < source.width; i++){
+			for(int j = 0; j < source.height; j++)
+			{
+
+				float mediaR = 0;
+				float mediaG = 0;
+				float mediaB = 0;
+
+				for(int m = (w/(-2)); m < w/2; m++)
+				{
+					for(int n = (h/(-2)); n < h/2; n++)
+					{
+						if( (i + m >= 0 && i + m < source.width) &&
+							(j + n >= 0 && j + n < source.height))
+						{
+
+							mediaR += matrix[i + m][j + n].r;
+							mediaG += matrix[i + m][j + n].g;
+							mediaB += matrix[i + m][j + n].b;
+						}
+					}
+				}
+
+				Pixel* p = new Pixel(
+					(unsigned)(mediaR/range), 
+					(unsigned)(mediaG/range), 
+					(unsigned)(mediaB/range));
+
+				output.push_back(*p);
+			}
+		}
+		string s;
+
+		if(convol)
+		{
+			s = "output/MediaRGBconvol.png";
+			source = Convolucao(source);
+		}
+		else
+			s = "output/MediaRGBnormal.png";
+
+		const char* filename = s.c_str();
+
+		Image *image = new Image(output, source.width, source.height);
+
+		Save(filename, *image);
+	}
+
+
+vector<vector<Pixel>> ToMatrix(Image source)
+{
+	vector<vector<Pixel>> output;
+
+	for (int i = 0; i < source.width; i++)
+	{
+		vector<Pixel> aux;
+		for (int j = 0; j < source.height; j++)
+		{
+			aux.push_back(source.pixels[i + j]);
+		}
+
+		output.push_back(aux);
+	}
+
+	return output;
 }

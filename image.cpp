@@ -56,3 +56,4 @@ vector<unsigned char> Image::ByteList()
 
 	return bytes;
 }
+

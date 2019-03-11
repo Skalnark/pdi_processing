@@ -11,9 +11,11 @@ using namespace std;
 int main()
 {
 	
-	string sFilename;
-	cout << "Arquivo: " << endl;
-	cin >> sFilename;
+	string sFilename = "lena.png";
+
+	//string sFilename;
+	//cout << "Arquivo: " << endl;
+	//cin >> sFilename;
 
 	const char* filename = sFilename.c_str();
 
@@ -22,11 +24,16 @@ int main()
 	if(image->pixel_count == 0)
 		return -1;
 
+
+	FiltroDeMediaRGB(*image, 3, 3, false);
+/*
 	while(1)
 	{
 		int option;
 		int bright;
 		int limiar;
+
+		int m, n;
 
 		printf( "\n"
 				"1 - Separacao das bandas de cores\n"
@@ -34,11 +41,13 @@ int main()
 			    "3 - Controle de brilho aditivo\n"
 			    "4 - Controle de brilho multiplicativo\n"
 			    "5 - Limiarizacao\n" 
-			    "6 - Filtro Sobel\n" 
-			    "7 - Filtro Media\n" 
-			    "8 - Fltro Mediana\n" 
+			    "6 - Filtro Media\n" 
+			    "7 - Fltro Mediana\n" 
+			    "8 - Filtro Sobel\n" 
 				"\n"
 				"0 - Sair\n");
+
+		cout << endl << "Opcao: ";
 
 		cin >> option;
 
@@ -73,12 +82,22 @@ int main()
 				LimiarizacaoRGB(*image, limiar);
 				LimiarizacaoYIQ(*image, limiar);
 				break;
+			case 6:
+				cout << "Altura da mascara: ";
+				cin >> m;
+				cout << "Largura da  mascara: ";
+				cin >> n;
+
+				FiltroDeMediaRGB(*image, m, n, true);
+				FiltroDeMediaRGB(*image, m, n, false);
+
+				break;
 			case 0:
 				return 0;
 			default:
 				break;
 		}
 	}
-
+	*/
 	return 0;
 }

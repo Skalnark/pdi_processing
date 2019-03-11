@@ -3,6 +3,9 @@ all: main
 main: main.cpp pdi.cpp pdi.h lodepng.cpp lodepng.h image.cpp image.h 
 	g++ --std=c++14 -fpermissive *.cpp -o pdi
 
+debug: main.cpp pdi.cpp pdi.h lodepng.cpp lodepng.h image.cpp image.h 
+	g++ -std=c++14 -g -fpermissive *.cpp -o pdi
+
 .PHONY:
 	clean
 

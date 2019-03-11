@@ -17,6 +17,7 @@ public:
 	Image();
 
 	Image(const char* filename);
+	
 	Image(std::vector<Pixel> pixels, unsigned width, unsigned height);
 
 	std::vector<unsigned char> ByteList();

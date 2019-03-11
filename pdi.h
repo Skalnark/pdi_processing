@@ -38,6 +38,12 @@ void LimiarizacaoYIQ(Image source, int limiar);
 
 void LimiarizacaoRGB(Image source, int limiar);
 
+Image Convolucao(Image source);
+
+void FiltroDeMediaRGB(Image source, unsigned w, unsigned h, bool convol);
+
+vector<vector<Pixel>> ToMatrix(Image source);
+
 vector<vector<unsigned>> Convolucao(vector<vector<unsigned>> mask, unsigned width, unsigned height);
 
 #endif
