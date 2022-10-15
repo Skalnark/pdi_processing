@@ -10,5 +10,6 @@ public:
 
 	Pixel (unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
 	Pixel (unsigned char red, unsigned char green, unsigned char blue);
+	Pixel Copy();
 };
 #endif	

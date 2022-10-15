@@ -3,29 +3,46 @@
 #include <sstream>
 #include <vector>
 
-#include "pdi.hpp"
+#include "processor.hpp"
 #include "image.hpp"
 
-using namespace std;
-
-int main()
+int main(int argc, char** argv)
 {
-	
-	string sFilename = "lena.png";
+	//TODO: load this from file
+	int brightnessA = 100;
+	int brightnessM = 2;
+	int limiar = 128;
 
-	//string sFilename;
-	//cout << "Arquivo: " << endl;
-	//cin >> sFilename;
+	if(argc < 2)
+	{
+		std::cout << "missing file path" << std::endl;	
+		return -1;
+	}
+	
+	std::string sFilename = argv[1];
 
 	const char* filename = sFilename.c_str();
 
 	Image* image = new Image(filename);
 
-	if(image->pixel_count == 0)
+	if(image->PixelCount() == 0)
 		return -1;
+	
+	Processor p = Processor(image);
 
+	p.Blue();
+	p.Red();
+	p.Green();
+	p.NegativoRGB();
+	p.NegativoYIQ();
+	p.RGB_to_YIQ_to_RGB_Again();
+	p.BrilhoAditivoRGB(brightnessA);
+	p.BrilhoMultiplicativoRGB(brightnessM);
+	p.BrilhoAditivoYIQ(brightnessA);
+	p.BrilhoMultiplicativoYIQ(brightnessM);
+	p.LimiarizacaoRGB(limiar);
+	p.LimiarizacaoYIQ(limiar);
 
-	FiltroDeMediaRGB(*image, 3, 3, false);
 /*
 	while(1)
 	{
