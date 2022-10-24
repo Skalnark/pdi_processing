@@ -31,12 +31,17 @@ Image::Image(const char *fileName)
 		this->_height = h;
 		this->pixels = pixels;
 		this->fileName = fileName;
-
-		std::cout << "file width: " << w << "; ";
-		std::cout << "file height: " << h << "; ";
-		std::cout << "total of pixels: " << this->_pixel_count << std::endl;
 	}
 };
+
+Image::Image(std::vector<Pixel> pixels, unsigned int width, unsigned int height, std::string fileName)
+{
+	this->pixels = pixels;
+	this->_width = width;
+	this->_height = height;
+	this-> fileName = fileName;
+	this->_pixel_count = width * height;
+}
 
 unsigned int Image::Width()
 {
@@ -53,7 +58,7 @@ unsigned int Image::PixelCount()
 	return _pixel_count;
 }
 
-Image::Image(Image* image, std::vector<Pixel> pixels)
+Image::Image(Image *image, std::vector<Pixel> pixels)
 {
 	this->_pixel_count = pixels.size();
 	this->_width = image->Width();
@@ -75,4 +80,14 @@ vector<unsigned char> Image::ByteList()
 	}
 
 	return bytes;
+}
+void Image::ToGrayScale()
+{
+	std::vector<Pixel> aux;
+
+	for (unsigned int i = 0; i < _pixel_count; ++i)
+	{
+		aux.push_back(pixels[i].ToGray());
+	}
+	pixels = aux;
 }

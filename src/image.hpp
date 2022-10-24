@@ -15,6 +15,8 @@ public:
 	Image();
 	Image(const char *fileName);
 	Image(Image* image, std::vector<Pixel> pixels);
+	Image(std::vector<Pixel> pixels, unsigned int width, unsigned int height, std::string fileName);
+	void ToGrayScale();
 
 	std::vector<unsigned char> ByteList();
 

@@ -310,93 +310,143 @@ void Processor::LimiarizacaoYIQ(int limiar)
 	Save("_limiarizacao_YIQ", output);
 }
 
-Image *Processor::Convolucao()
-{
-	int len = source->PixelCount();
-	auto aux = source->pixels;
-	Image *output = new Image(*source);
-
-	for (unsigned int i = 0; i < output->PixelCount(); i++)
-	{
-		output->pixels[i] = aux[len - (i + 1)];
-	}
-
-	return output;
-}
-
-void Processor::FiltroDeMediaRGB(unsigned w, unsigned h, bool convol)
-{
-
-	std::vector<std::vector<Pixel>> matrix = ToMatrix();
-	std::vector<Pixel> pixelsOutput;
-	Image *imageOutput;
-	int range = (w * h);
-
-	std::string suffix;
-
-	if (convol)
-	{
-		suffix = "_media_RGB_convol";
-		imageOutput = Convolucao();
-	}
-	else
-	{
-		suffix = "_media_RGB_normal";
-		imageOutput = new Image(*source);
-	}
-
-	for (unsigned int i = 0; i < imageOutput->Width(); i++)
-	{
-		for (unsigned int j = 0; j < imageOutput->Height(); j++)
-		{
-
-			float mediaR = 0;
-			float mediaG = 0;
-			float mediaB = 0;
-
-			for (unsigned int m = (w / (-2)); m < w / 2; m++)
-			{
-				for (unsigned int n = (h / (-2)); n < h / 2; n++)
-				{
-					if ((i + m >= 0 && i + m < imageOutput->Width()) &&
-						(j + n >= 0 && j + n < imageOutput->Height()))
-					{
-
-						mediaR += matrix[i + m][j + n].r;
-						mediaG += matrix[i + m][j + n].g;
-						mediaB += matrix[i + m][j + n].b;
-					}
-				}
-			}
-
-			Pixel *p = new Pixel(
-				(unsigned)(mediaR / range),
-				(unsigned)(mediaG / range),
-				(unsigned)(mediaB / range));
-
-			pixelsOutput.push_back(*p);
-		}
-	}
-
-	Image *output = new Image(source, pixelsOutput);
-
-	Save(suffix, output);
-}
-
 std::vector<std::vector<Pixel>> Processor::ToMatrix()
 {
 	std::vector<std::vector<Pixel>> output;
+	int count = 0;
 
-	for (unsigned int i = 0; i < source->Width(); i++)
+	for (unsigned int i = 0; i < source->Height(); ++i)
 	{
 		std::vector<Pixel> aux;
-		for (unsigned int j = 0; j < source->Height(); j++)
+		for (unsigned int j = 0; j < source->Width(); ++j)
 		{
-			aux.push_back(source->pixels[i + j]);
+			aux.push_back(source->pixels[i + count]);
+			count++;
 		}
-
 		output.push_back(aux);
+		count--;
+		// std::cout << (int)output[1][0].r << std::endl;
 	}
 
 	return output;
+}
+
+Pixel Processor::MedianaRGB(std::vector<std::vector<Pixel>> frame)
+{
+
+	std::vector<unsigned char> auxR;
+	std::vector<unsigned char> auxG;
+	std::vector<unsigned char> auxB;
+
+	for (long unsigned int i = 0; i < frame.size(); ++i)
+	{
+		for (long unsigned int j = 0; j < frame[i].size(); ++j)
+		{
+			auxR.push_back(frame[i][j].r);
+			auxG.push_back(frame[i][j].g);
+			auxB.push_back(frame[i][j].b);
+		}
+	}
+
+	sort(auxR.begin(), auxR.end());
+	sort(auxG.begin(), auxG.end());
+	sort(auxB.begin(), auxB.end());
+
+	int pivot = (auxR.size() / 2) + 1;
+
+	return Pixel(auxR[pivot], auxG[pivot], auxB[pivot]);
+}
+
+Pixel Processor::MedianaGray(std::vector<std::vector<Pixel>> frame)
+{
+
+	std::vector<unsigned int> aux;
+
+	for (long unsigned int i = 0; i < frame.size(); ++i)
+	{
+		for (long unsigned int j = 0; j < frame[i].size(); ++j)
+		{
+			aux.push_back(frame[i][j].ToGray().r);
+		}
+	}
+
+	std::sort(aux.begin(), aux.end());
+
+	int pivot = (aux.size() / 2);
+
+	return Pixel(aux[pivot], aux[pivot], aux[pivot]);
+}
+
+std::vector<std::vector<Pixel>> Processor::MakeFrame(int width, int height, int pVertical, int pHorizontal, std::vector<std::vector<Pixel>> matrix)
+{
+	std::vector<std::vector<Pixel>> output;
+
+	for (int i = pVertical - (height / 2); i < pVertical + (height / 2); ++i)
+	{
+		std::vector<Pixel> row;
+		for (int j = pHorizontal - (width / 2); j < pHorizontal + (width / 2); ++j)
+		{
+			if (i < 0 || j < 0 || i > (int)matrix.size() - 1 || j > (int)matrix[i].size() - 1)
+			{
+				row.push_back(Pixel(0, 0, 0));
+			}
+			else
+			{
+				row.push_back(matrix[i][j]);
+			}
+		}
+		output.push_back(row);
+	}
+
+	return output;
+}
+
+void Processor::FiltroMedianaRGB(unsigned int w, unsigned int h)
+{
+	if (w > source->Width() || h > source->Height() || w % 2 == 0 || h % 2 == 0)
+	{
+		throw std::invalid_argument("width and height must be valid odd numbers");
+	}
+
+	std::vector<Pixel> newImage;
+	auto matrix = ToMatrix();
+
+	for (unsigned int i = 0; i < source->Height(); ++i)
+	{
+		for (unsigned int j = 0; j < source->Width(); ++j)
+		{
+			auto frame = MakeFrame(w, h, i, j, matrix);
+
+			newImage.push_back(MedianaRGB(frame));
+		}
+	}
+
+	Image output = Image(newImage, source->Width(), source->Height(), source->fileName);
+
+	Save("_mediana_rgb", &output);
+}
+
+void Processor::FiltroMedianaGray(unsigned int w, unsigned int h)
+{
+	if (w > source->Width() || h > source->Height() || w % 2 == 0 || h % 2 == 0)
+	{
+		throw std::invalid_argument("width and height must be valid odd numbers");
+	}
+
+	std::vector<Pixel> newImage;
+	auto matrix = ToMatrix();
+
+	for (unsigned int i = 0; i < source->Height(); ++i)
+	{
+		for (unsigned int j = 0; j < source->Width(); ++j)
+		{
+			auto frame = MakeFrame(w, h, i, j, matrix);
+
+			newImage.push_back(MedianaGray(frame));
+		}
+	}
+
+	Image output = Image(source, newImage);
+
+	Save("_mediana_gray", &output);
 }

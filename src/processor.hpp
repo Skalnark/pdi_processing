@@ -11,8 +11,8 @@
 class Processor
 {
 public:
-    Image* source;
-    Processor(Image* source);
+    Image *source;
+    Processor(Image *source);
 
     void Red();
 
@@ -42,16 +42,20 @@ public:
 
     void LimiarizacaoRGB(int limiar);
 
-    Image* Convolucao();
+    Image *Convolucao();
 
-    void FiltroDeMediaRGB(unsigned w, unsigned h, bool convol);
+    void FiltroMedianaRGB(unsigned int w, unsigned int h);
+    void FiltroMedianaGray(unsigned int w, unsigned int h);
 
-    std::vector<std::vector<Pixel>> ToMatrix();
 
     std::vector<std::vector<unsigned>> Convolucao(std::vector<std::vector<unsigned>> mask, unsigned width, unsigned height);
 
 private:
     void Save(std::string suffix, Image *source);
+    Pixel MedianaRGB(std::vector<std::vector<Pixel>> frame);
+    Pixel MedianaGray(std::vector<std::vector<Pixel>> frame);
+    std::vector<std::vector<Pixel>> MakeFrame(int width, int height, int pVertical, int pHorizontal, std::vector<std::vector<Pixel>> matrix);
+    std::vector<std::vector<Pixel>> ToMatrix();
 };
 
 #endif

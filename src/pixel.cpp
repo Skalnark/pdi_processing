@@ -20,3 +20,21 @@ Pixel Pixel::Copy()
 {
 	return Pixel(r, g, b, a);
 }
+
+Pixel Pixel::ToGray()
+{
+	float total = ((float)r + (float)g + (float)b)/3.0;
+
+	if(total > 255.0)
+	{
+		total = 255.0;
+	}
+	else if(total < 0)
+	{
+		total = 0;
+	}
+
+	unsigned value = (unsigned char)total;
+
+	return Pixel(value, value, value, (unsigned char)255); 
+}
