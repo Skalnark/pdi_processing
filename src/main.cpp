@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 	if (argc < 2)
 	{
 		std::cout << "missing arguments" << std::endl;
-		std::cout << "./pdi filepath medianM medianN";
+		std::cout << "./pdi filepath medianM medianN" << std::endl;
 		return -1;
 	}
 	int m = 3;

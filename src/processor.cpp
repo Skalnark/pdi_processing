@@ -146,7 +146,7 @@ void Processor::RGB_to_YIQ_to_RGB_Again()
 
 	std::vector<Pixel> pixels = YIQ_to_RGB(yiq);
 
-	Image *output = new Image(*source);
+	Image *output = new Image(source, pixels);
 
 	Save("_rgb_yiq_test", output);
 }
@@ -380,6 +380,15 @@ Pixel Processor::MedianaGray(std::vector<std::vector<Pixel>> frame)
 std::vector<std::vector<Pixel>> Processor::MakeFrame(int width, int height, int pVertical, int pHorizontal, std::vector<std::vector<Pixel>> matrix)
 {
 	std::vector<std::vector<Pixel>> output;
+
+	if(height == 1)
+	{
+		height = 2;
+	}
+	if(width ==1)
+	{
+		width = 2;
+	}
 
 	for (int i = pVertical - (height / 2); i < pVertical + (height / 2); ++i)
 	{
